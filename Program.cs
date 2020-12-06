@@ -20,9 +20,9 @@ namespace MaximumSpeed
             Chrono.Start();
             using(var writer = new BinaryWriter(File.OpenWrite(fileName)))
             {
-                for (var number = 0m; number < quantity; number++)
+                for (var value = 0m; value < quantity; value++)
                 {
-                    writer.Write(number);
+                    writer.Write(value);
                 }
             }
             Chrono.End();
