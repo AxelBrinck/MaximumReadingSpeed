@@ -35,3 +35,16 @@ Instead, buffer the stream size and compare against that variable.
 
 Maximum reading speed is achieved when compiling in release mode.
 `dotnet run --configuration release`.
+
+## Why maximum speed is not your target.
+Let's say that you achieved some other method even faster than this.
+You are reading a lot of bytes per second, but, is the resulting type matching
+your needs?
+
+Casting is expensive even with unsafe code. The .NET decimal constructor
+requires four 32-bit integer numbers, and we are getting 64-bit integers.
+
+So if our target are decimal numbers, the real question is: how many decimal
+numbers can we read per second? Maybe other method gives us more bytes per
+second, but at the time of converting them to the target type the overall
+cost is greater than a slower method.
