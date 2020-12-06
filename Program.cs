@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MaximumSpeed.Utils;
 
 namespace MaximumSpeed
 {
@@ -7,9 +8,8 @@ namespace MaximumSpeed
     {
         private static readonly string FileName = "data.bin";
         private static readonly int TotalValues = 100 * 1024 * 1024;
-
-        private static readonly Chronometer Chrono = new Chronometer();
-
+        private static readonly FileChronometer Chrono = new FileChronometer();
+        
         private static void WriteDummyFile(string fileName, int quantity)
         {
             Chrono.Start();
@@ -22,10 +22,8 @@ namespace MaximumSpeed
             }
             Chrono.End();
 
-            var totalBytes = new FileInfo(fileName).Length;
-            var elapsedTime = Chrono.GetDuration();
-            var megaBytes = (float) totalBytes / 1024 / 1024;
-            Console.WriteLine($"Write Speed: {megaBytes / elapsedTime.TotalSeconds:0.000}Mb/s. Total: {totalBytes} bytes.");
+            Chrono.Bytes = new FileInfo(fileName).Length;
+            Console.WriteLine($"Write Speed: {Chrono.GetBytesPerSecond():0.000}Mb/s. Total: {Chrono.Bytes} bytes.");
         }
 
         private static unsafe void ReadDummyFile(string fileName)

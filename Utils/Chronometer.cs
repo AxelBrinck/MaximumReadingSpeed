@@ -4,13 +4,19 @@ namespace MaximumSpeed.Utils
 {
     public class Chronometer
     {
-        private DateTime _started;
-        private DateTime _finished;
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
 
-        public void Start() => _started = DateTime.Now;
+        public void Start()
+        {
+            StartTime = DateTime.Now;
+        }
 
-        public void End() => _finished = DateTime.Now;
+        public void End()
+        {
+            EndTime = DateTime.Now;
+        }
 
-        public TimeSpan GetDuration() => _finished - _started;
+        public TimeSpan GetDuration() => EndTime - StartTime;
     }
 }
