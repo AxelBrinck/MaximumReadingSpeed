@@ -10,12 +10,17 @@ namespace MaximumSpeed
         private static readonly int TotalValues = 100 * 1024 * 1024;
         private static readonly FileChronometer Chrono = new FileChronometer();
         
+        /// <summary>
+        /// Writing a file with a conventional BinaryWriter.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="quantity"></param>
         private static void WriteDummyFile(string fileName, int quantity)
         {
             Chrono.Start();
             using(var writer = new BinaryWriter(File.OpenWrite(fileName)))
             {
-                for (var number = 0M; number < TotalValues; number++)
+                for (var number = 0m; number < quantity; number++)
                 {
                     writer.Write(number);
                 }
