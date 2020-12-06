@@ -26,7 +26,7 @@ Tweaking the unsafe section, you will be able to read structured data.
 But the down-side is that is not very friendly to use. You may want to stick
 with 64-bit or another primitive as your only type in your stream.
 
-Still, worth the implementation if your project is IO critical. As the main
+Still worth the implementation if your project is IO critical. As the main
 benefit of this project is a very low CPU usage with a maximum HDD speed.
 
 ## Notes
