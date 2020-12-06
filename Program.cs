@@ -35,7 +35,7 @@ namespace MaximumSpeed
         {
             var position = 0L;
             var fileSize = new FileInfo(fileName).Length;
-            long[] array = new long[elementsToBuffer];
+            var array = new long[elementsToBuffer];
             var arraySize = array.Length * sizeof(long);
             var elementSize = sizeof(long);
             
