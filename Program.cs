@@ -7,7 +7,7 @@ namespace MaximumSpeed
     class Program
     {
         private static readonly string FileName = "data.bin";
-        private static readonly int TotalValues = 100 * 1024 * 1024;
+        private static readonly int TotalValues = 1024 * 1024 * 100;
         private static readonly FileChronometer Chrono = new FileChronometer();
         
         /// <summary>
@@ -20,7 +20,7 @@ namespace MaximumSpeed
             Chrono.Start();
             using(var writer = new BinaryWriter(File.OpenWrite(fileName)))
             {
-                for (var value = 0m; value < quantity; value++)
+                for (var value = 0L; value < quantity; value++)
                 {
                     writer.Write(value);
                 }
@@ -31,41 +31,39 @@ namespace MaximumSpeed
             Console.WriteLine($"Write Speed: {Chrono.GetBytesPerSecond():0.000}Mb/s. Total: {Chrono.Bytes} bytes.");
         }
 
-        private static unsafe void ReadDummyFile(string fileName)
+        private static unsafe void ReadDummyFile(string fileName, int elementsToBuffer)
         {
             var position = 0L;
-            decimal last = 0;
-            int values = 4096 / sizeof(decimal);
-            decimal[] longArray = new decimal[values];
+            var fileSize = new FileInfo(fileName).Length;
+            long[] array = new long[elementsToBuffer];
+            var arraySize = array.Length * sizeof(long);
+            var elementSize = sizeof(long);
             
             Chrono.Start();
-            using(var stream = File.OpenRead(FileName))
-            using(var reader = new BinaryReader(stream))
+            using(var reader = new BinaryReader(File.OpenRead(FileName)))
             {
                 do
                 {
-                    var toRead = position + 4096 >= totalBytes ? (int)(totalBytes - position) : 4096;
-                    byte[] buffer = reader.ReadBytes(toRead);
+                    var bytesToRead = position + arraySize >= fileSize ? (int)(fileSize - position) : arraySize;
+                    var elementsToRead = bytesToRead / elementSize;
+                    byte[] buffer = reader.ReadBytes(bytesToRead);
                     
-                    for (var i = 0; i < toRead; i++)
+                    for (var i = 0; i < elementsToRead; i++)
                     {
                         fixed(byte *pBuffer = buffer)
                         {
-                            longArray[i] = *(decimal*) pBuffer + i * sizeof(decimal);
+                            array[i] = *(long*) (pBuffer + i * elementSize);
                         }
                     }
 
-                    position += toRead;
+                    position += bytesToRead;
                 }
-                while (position < totalBytes);
+                while (position < fileSize);
             }
             Chrono.End();
-            Console.WriteLine(last);
 
-            totalBytes = new FileInfo(FileName).Length;
-            elapsedTime = Chrono.GetDuration();
-            megaBytes = (float) totalBytes / 1024 / 1024;
-            Console.WriteLine($"Read Speed: {megaBytes / elapsedTime.TotalSeconds:0.000}Mb/s. Total: {position} / {totalBytes} bytes.");
+            Chrono.Bytes = new FileInfo(fileName).Length;
+            Console.WriteLine($"Read Speed: {Chrono.GetBytesPerSecond():0.000}Mb/s. Total: {Chrono.Bytes} bytes.");
         }
 
         static unsafe void Main(string[] args)
@@ -74,7 +72,7 @@ namespace MaximumSpeed
             
             WriteDummyFile(FileName, TotalValues);
 
-            
+            ReadDummyFile(FileName, 4096 / sizeof(long));
 
             
         }
