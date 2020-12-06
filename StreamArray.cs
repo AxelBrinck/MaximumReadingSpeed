@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace  StreamArray
+namespace  MaximumSpeed
 {
     public class StreamArray/*<T> where T : ISerializable*/
     {

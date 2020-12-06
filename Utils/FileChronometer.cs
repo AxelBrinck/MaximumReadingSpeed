@@ -1,4 +1,4 @@
-namespace StreamArray.Utils
+namespace MaximumSpeed.Utils
 {
     public class FileChronometer
     {
