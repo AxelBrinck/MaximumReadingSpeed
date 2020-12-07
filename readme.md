@@ -15,11 +15,10 @@ could end up having memory-leaks and all sort of memory errors.
 Taking my old 2014 laptop with SSD, and my Google ProtoBuf repository as
 references, they were both reading structured data at 31Mb/s.
 
-With unsafe code and going *beyond* .NET, this method reaches 715Mb/s.
+With unsafe code and going *beyond* .NET, this method reaches 454/s.
 
 ```
-Write Speed: 228.867Mb/s. Total: 838860800 bytes.
-Read Speed: 715.029Mb/s. Total: 838860800 bytes.
+Read Speed: 454.294Mb/s. Total: 1677721600 bytes.
 ```
 
 Tweaking the unsafe section, you will be able to read structured data.
