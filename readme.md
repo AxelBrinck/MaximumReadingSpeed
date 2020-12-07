@@ -18,7 +18,7 @@ references, they were both reading structured data at 31Mb/s.
 With unsafe code and going *beyond* .NET, this method reaches 454/s.
 
 ```
-Read Speed: 454.294Mb/s. Total: 1677721600 bytes.
+Read Speed: 493.098Mb/s. Total: 1677721600 bytes.
 ```
 
 Tweaking the unsafe section, you will be able to read structured data.
@@ -34,3 +34,6 @@ Instead, buffer the stream size and compare against that variable.
 
 Maximum reading speed is achieved when compiling in release mode.
 `dotnet run --configuration release`.
+
+BitConverter .NET class ranks as second in my testings being 5% away from
+unsafe reading.

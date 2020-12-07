@@ -53,15 +53,12 @@ namespace MaximumSpeed
                     
                     for (var i = 0; i < elementsToRead; i++)
                     {
-                        fixed(byte *pBuffer = buffer)
-                        {
-                            array[i] = new decimal(new int[] {
-                                *(int*) (pBuffer + i * elementSize),
-                                *(int*) (pBuffer + i * elementSize + 4),
-                                *(int*) (pBuffer + i * elementSize + 8),
-                                *(int*) (pBuffer + i * elementSize + 12)
-                            });
-                        }
+                        array[i] = new decimal(new int[] {
+                            BitConverter.ToInt32(buffer, i * 16),
+                            BitConverter.ToInt32(buffer, i * 16 + 4),
+                            BitConverter.ToInt32(buffer, i * 16 + 8),
+                            BitConverter.ToInt32(buffer, i * 16 + 8)
+                        });
                     }
 
                     position += bytesToRead;
@@ -72,14 +69,13 @@ namespace MaximumSpeed
 
             Chrono.Bytes = new FileInfo(fileName).Length;
             Console.WriteLine($"Read Speed: {Chrono.GetBytesPerSecond():0.000}Mb/s. Total: {Chrono.Bytes} bytes.");
-            Console.WriteLine($"Read Speed: {Chrono.GetBytesPerSecond() / 16:0.000}MDecimals/s. Total: {Chrono.Bytes} bytes.");
         }
 
         static unsafe void Main(string[] args)
         {
-            //File.Delete(FileName);
+            File.Delete(FileName);
             
-            //WriteDummyFile(FileName, TotalValues);
+            WriteDummyFile(FileName, TotalValues);
 
             ReadDummyFile(FileName, (1024 * 1024) / sizeof(decimal));
         }
