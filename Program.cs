@@ -34,7 +34,7 @@ namespace MaximumSpeed
             Console.WriteLine($"Write Speed: {Chrono.GetBytesPerSecond():0.000}Mb/s. Total: {Chrono.Bytes} bytes.");
         }
 
-        private static unsafe void ReadDummyFile(string fileName, int elementsToBuffer)
+        private static void ReadDummyFile(string fileName, int elementsToBuffer)
         {
             var position = 0L;
             var fileSize = new FileInfo(fileName).Length;
