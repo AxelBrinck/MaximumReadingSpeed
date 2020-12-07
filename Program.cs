@@ -38,12 +38,9 @@ namespace MaximumSpeed
         {
             var position = 0L;
             var fileSize = new FileInfo(fileName).Length;
-            var array = new long[elementsToBuffer];
-            var arraySize = array.Length * sizeof(long);
-            var elementSize = sizeof(long);
-            var converters = new List<Task>();
-            var processors = Environment.ProcessorCount;
-            var semaphore = new Semaphore(processors - 4, processors - 4);
+            var array = new decimal[elementsToBuffer];
+            var arraySize = array.Length * sizeof(decimal);
+            var elementSize = sizeof(decimal);
             
             Chrono.Start();
             using(var reader = new BinaryReader(File.OpenRead(FileName)))
@@ -53,35 +50,25 @@ namespace MaximumSpeed
                     var bytesToRead = position + arraySize >= fileSize ? (int)(fileSize - position) : arraySize;
                     var elementsToRead = bytesToRead / elementSize;
                     var buffer = reader.ReadBytes(bytesToRead);
-                    Thread.CurrentThread.Priority = ThreadPriority.Highest;
-                    var task = Task.Factory.StartNew(() => {
-                        //Console.WriteLine("Task started");
-                        var array = new decimal[elementsToRead];
-                        for (var i = 0; i < elementsToRead; i++)
+                    
+                    for (var i = 0; i < elementsToRead; i++)
+                    {
+                        fixed(byte *pBuffer = buffer)
                         {
-                            semaphore.WaitOne();
-                            fixed(byte *pBuffer = buffer)
-                            {
-                                array[i] = new decimal(new int[] {
-                                    *(int*) (pBuffer + i * elementSize),
-                                    *(int*) (pBuffer + i * elementSize + 4),
-                                    *(int*) (pBuffer + i * elementSize + 8),
-                                    *(int*) (pBuffer + i * elementSize + 12)
-                                });
-                            }
-                            semaphore.Release();
+                            array[i] = new decimal(new int[] {
+                                *(int*) (pBuffer + i * elementSize),
+                                *(int*) (pBuffer + i * elementSize + 4),
+                                *(int*) (pBuffer + i * elementSize + 8),
+                                *(int*) (pBuffer + i * elementSize + 12)
+                            });
                         }
-                        //Console.WriteLine("Task ended");
-                    });
-                    converters.Add(task);
+                    }
 
                     position += bytesToRead;
                 }
                 while (position < fileSize);
             }
             Chrono.End();
-
-            Task.WhenAll(converters);
 
             Chrono.Bytes = new FileInfo(fileName).Length;
             Console.WriteLine($"Read Speed: {Chrono.GetBytesPerSecond():0.000}Mb/s. Total: {Chrono.Bytes} bytes.");
